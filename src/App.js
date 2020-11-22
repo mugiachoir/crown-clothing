@@ -15,6 +15,7 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
+    // DISMANTLE METHOD SETCURRENTUSER DARI REDUX
     const { setCurrentUser } = this.props;
     // LISTEN PADA PERUBAHAN AUTH, KARENA FUNGSI INI ME-RETURN UNSUBSCRIBE MAKA INISIALISASI JUGA UNSUBSCRIBE
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
@@ -63,8 +64,10 @@ class App extends React.Component {
   }
 }
 
+// MENGAMBIL DATA DARI REDUX
 const mapStateToProps = ({ user }) => ({ currentUser: user.currentUser });
 
+// MENGAMBIL METHOD SETCURRENTUSER
 const mapDispatchToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
 });
