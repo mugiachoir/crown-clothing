@@ -9,7 +9,9 @@
     }
   
     .preview {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 1em;
       justify-content: space-between;
     }
   }
