@@ -1,6 +1,17 @@
 .directory-menu{
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5em;
+    grid-template-areas: "hats jackets"
+    "sneakers sneakers" "womens mens";
     justify-content: space-between;
+}
+
+@media screen and (min-width:600px){
+    .directory-menu{
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr ;
+        grid-template-areas: "hats hats jackets jackets sneakers sneakers"
+        "womens womens womens mens mens mens";
+    }
 }

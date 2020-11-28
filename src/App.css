@@ -1,13 +1,25 @@
 *{
   box-sizing: border-box;
 }
-
+:root{
+  font-size: 14px;
+}
 body{
   font-family: 'Open Sans Condensed', sans-serif;
-  padding: 1.5em 4em;
+  padding: 1.5em 1em;
 }
 
 a{
   text-decoration: none;
   color: black;
+}
+
+@media screen and (min-width:600px){
+  :root{
+    font-size: 16px;
+  }
+  
+  body{
+    padding: 1.5em 4em;
+  }
 }

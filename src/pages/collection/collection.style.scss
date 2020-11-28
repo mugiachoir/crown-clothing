@@ -9,11 +9,14 @@
   
     .items {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      grid-gap: 10px;
-  
-      & .collection-item {
-        margin-bottom: 30px;
-      }
+      grid-template-columns: 1fr 1fr;
+      column-gap: 1em;
+      row-gap: 3em;
     }
   }
+
+@media screen and (min-width:600px){
+  .items{
+    grid-template-columns: 1fr 1fr 1fr 1fr !important;
+  }
+}

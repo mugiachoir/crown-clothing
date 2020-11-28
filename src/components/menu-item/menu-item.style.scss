@@ -1,12 +1,10 @@
 .menu-item{
-    min-width: 30%;
+    width: 100%;;
     height: 15em;
     flex: 1 1 auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid black;
-    margin: 0 0.8em 1em;
     overflow: hidden;
     
     &:hover{
@@ -27,11 +25,23 @@
     }
 
     &:first-child{
-        margin-right: 0.6em;
+        grid-area: hats;
+    }
+
+    &:nth-child(2){
+        grid-area:jackets ;
     }
     
+    &:nth-child(3){
+        grid-area: sneakers;
+    }
+
+    &:nth-child(4){
+        grid-area: womens;
+    }
+
     &:last-child{
-        margin-left: 0.6em;
+        grid-area: mens;
     }
     
     .background-image{
@@ -48,7 +58,6 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        border: 1px solid black;
         background-color: white;
         opacity: 0.7;
         position: absolute;
