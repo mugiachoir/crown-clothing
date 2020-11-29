@@ -20,11 +20,18 @@
       
       .option {
         padding: 10px 15px;
+        padding-bottom: 5px;
         cursor: pointer;
+        color:rgb(122, 122, 122);
 
-        &:hover{
-          font-weight: bolder;
-          text-decoration: underline;
+        &:hover,&.active{
+          font-weight: bold;
+        }
+
+        &.active{
+          font-weight: bold;
+          color: black;
+          border-bottom: 2px solid black;
         }
       }
     }

@@ -9,37 +9,72 @@ import CartDropdown from "../cart-dropdown/cart-dropdown.component";
 import { createStructuredSelector } from "reselect";
 import { selectCartHidden } from "../../redux/cart/cart.selectors";
 import { selectCurrentUser } from "../../redux/user/user.selectors";
+import { selectCurrentNav } from "../../redux/nav/nav.selectors";
+import { setCurrentNav } from "../../redux/nav/nav.actions";
 
-const Header = ({ currentUser, hidden }) => (
-  <div className="header">
-    <Link to="/" className="logo-container">
-      <Logo className="logo" />
-    </Link>
-    <div className="options">
-      <Link className="option" to="/shop">
-        SHOP
-      </Link>
-      <Link className="option" to="/contact">
-        CONTACT
-      </Link>
-      {currentUser ? (
-        <div className="option" onClick={() => auth.signOut()}>
-          SIGN OUT
-        </div>
-      ) : (
-        <Link className="option" to="/signin">
-          SIGN IN
+class Header extends React.Component {
+  activeNav = () => {
+    setTimeout(() => {
+      const currentLocation = window.location.href;
+      const pageName = currentLocation.split("/");
+      this.props.setCurrentNav(pageName[3]);
+    }, 100);
+  };
+
+  render() {
+    return (
+      <div className="header">
+        <Link onClick={this.activeNav} to="/" className="logo-container">
+          <Logo className="logo" />
         </Link>
-      )}
-      <CartIcon />
-    </div>
-    {hidden ? null : <CartDropdown />}
-  </div>
-);
+        <div className="options">
+          <Link
+            onClick={this.activeNav}
+            className={`option ${this.props.nav === "shop" ? "active" : ""} `}
+            to="/shop"
+          >
+            SHOP
+          </Link>
+          <Link
+            onClick={this.activeNav}
+            className={`option ${
+              this.props.nav === "contact" ? "active" : ""
+            } `}
+            to="/contact"
+          >
+            CONTACT
+          </Link>
+          {this.props.currentUser ? (
+            <div className="option" onClick={() => auth.signOut()}>
+              SIGN OUT
+            </div>
+          ) : (
+            <Link
+              onClick={this.activeNav}
+              className={`option ${
+                this.props.nav === "signin" ? "active" : ""
+              } `}
+              to="/signin"
+            >
+              SIGN IN
+            </Link>
+          )}
+          <CartIcon />
+        </div>
+        {this.props.hidden ? null : <CartDropdown />}
+      </div>
+    );
+  }
+}
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
   hidden: selectCartHidden,
+  nav: selectCurrentNav,
 });
 
-export default connect(mapStateToProps)(Header);
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentNav: (location) => dispatch(setCurrentNav(location)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
