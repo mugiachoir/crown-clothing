@@ -1,6 +1,4 @@
 import React from "react";
-import "./header.style.scss";
-import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../../assets/crown.svg";
 import { auth } from "../../firebase/firebase.utils";
 import { connect } from "react-redux";
@@ -11,6 +9,12 @@ import { selectCartHidden } from "../../redux/cart/cart.selectors";
 import { selectCurrentUser } from "../../redux/user/user.selectors";
 import { selectCurrentNav } from "../../redux/nav/nav.selectors";
 import { setCurrentNav } from "../../redux/nav/nav.actions";
+import {
+  HeaderContainer,
+  LogoContainer,
+  OptionsContainer,
+  OptionLink,
+} from "./header.style";
 
 class Header extends React.Component {
   activeNav = () => {
@@ -23,46 +27,48 @@ class Header extends React.Component {
 
   render() {
     return (
-      <div className="header">
-        <Link onClick={this.activeNav} to="/" className="logo-container">
+      <HeaderContainer>
+        <LogoContainer onClick={this.activeNav} to="/">
           <Logo className="logo" />
-        </Link>
-        <div className="options">
-          <Link
+        </LogoContainer>
+        <OptionsContainer>
+          <OptionLink
             onClick={this.activeNav}
-            className={`option ${this.props.nav === "shop" ? "active" : ""} `}
+            className={`${this.props.nav === "shop" ? "active" : ""} `}
             to="/shop"
           >
             SHOP
-          </Link>
-          <Link
+          </OptionLink>
+          <OptionLink
             onClick={this.activeNav}
-            className={`option ${
-              this.props.nav === "contact" ? "active" : ""
-            } `}
+            className={` ${this.props.nav === "contact" ? "active" : ""} `}
             to="/contact"
           >
             CONTACT
-          </Link>
+          </OptionLink>
           {this.props.currentUser ? (
-            <div className="option" onClick={() => auth.signOut()}>
+            <OptionLink
+              as="div"
+              onClick={() => {
+                auth.signOut();
+                this.activeNav();
+              }}
+            >
               SIGN OUT
-            </div>
+            </OptionLink>
           ) : (
-            <Link
+            <OptionLink
               onClick={this.activeNav}
-              className={`option ${
-                this.props.nav === "signin" ? "active" : ""
-              } `}
+              className={` ${this.props.nav === "signin" ? "active" : ""} `}
               to="/signin"
             >
               SIGN IN
-            </Link>
+            </OptionLink>
           )}
           <CartIcon />
-        </div>
+        </OptionsContainer>
         {this.props.hidden ? null : <CartDropdown />}
-      </div>
+      </HeaderContainer>
     );
   }
 }

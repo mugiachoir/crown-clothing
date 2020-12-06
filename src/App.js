@@ -16,6 +16,7 @@ import { setCurrentUser } from "./redux/user/user.actions";
 
 class App extends React.Component {
   unsubscribeFromAuth = null;
+  unsubscribeFromSnapShot = null;
 
   componentDidMount() {
     // DISMANTLE METHOD SETCURRENTUSER DARI REDUX
@@ -26,7 +27,7 @@ class App extends React.Component {
         const userRef = await createUserProfileDocument(userAuth);
 
         // LISTEN SAAT TERJADI SNAPSHOT
-        userRef.onSnapshot((snapShot) => {
+        this.unsubscribeFromSnapShot = userRef.onSnapshot((snapShot) => {
           setCurrentUser({
             id: snapShot.id,
             ...snapShot.data(),
@@ -41,6 +42,7 @@ class App extends React.Component {
   componentWillUnmount() {
     // TUTUP LISTEN PERUBAHAN AUTH AGAR TIDAK ADA MEMORY LEAK
     this.unsubscribeFromAuth();
+    this.unsubscribeFromSnapShot();
   }
 
   render() {
