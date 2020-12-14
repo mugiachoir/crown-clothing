@@ -14,7 +14,7 @@ const persistConfig = {
   whiteList: ["cart"],
 };
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   user: userReducer,
   cart: cartReducer,
   directory: directoryReducer,

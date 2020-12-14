@@ -1,6 +1,5 @@
 import React from "react";
 import { ReactComponent as Logo } from "../../assets/crown.svg";
-import { auth } from "../../firebase/firebase.utils";
 import { connect } from "react-redux";
 import CartIcon from "../cart-icon/cart-icon.component";
 import CartDropdown from "../cart-dropdown/cart-dropdown.component";
@@ -15,6 +14,7 @@ import {
   OptionsContainer,
   OptionLink,
 } from "./header.style";
+import { signOutStart } from "../../redux/user/user.actions";
 
 class Header extends React.Component {
   activeNav = () => {
@@ -25,7 +25,13 @@ class Header extends React.Component {
     }, 100);
   };
 
+  componentWillUnmount() {
+    this.props.setCurrentNav(null);
+  }
+
   render() {
+    const { signOutStart } = this.props;
+
     return (
       <HeaderContainer>
         <LogoContainer onClick={this.activeNav} to="/">
@@ -50,7 +56,7 @@ class Header extends React.Component {
             <OptionLink
               as="div"
               onClick={() => {
-                auth.signOut();
+                signOutStart();
                 this.activeNav();
               }}
             >
@@ -81,6 +87,7 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = (dispatch) => ({
   setCurrentNav: (location) => dispatch(setCurrentNav(location)),
+  signOutStart: () => dispatch(signOutStart()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

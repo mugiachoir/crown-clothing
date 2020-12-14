@@ -6,37 +6,22 @@ import Header from "./components/header/header.component";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import CheckoutPage from "./pages/checkout/checkout.component";
 import { Route, Switch, Redirect } from "react-router-dom";
-import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 import { selectCurrentUser } from "./redux/user/user.selectors";
 import { createStructuredSelector } from "reselect";
+import { setCurrentNav } from "./redux/nav/nav.actions";
+import { checkUserSession } from "./redux/user/user.actions";
 
 // CONNECT UNTUK MENGAMBIL STATE DARI REDUX STORAGE DAN MENGUBAHNYA JADI PROPS
 import { connect } from "react-redux";
-import { setCurrentUser } from "./redux/user/user.actions";
 
 class App extends React.Component {
   unsubscribeFromAuth = null;
   unsubscribeFromSnapShot = null;
 
   componentDidMount() {
-    // DISMANTLE METHOD SETCURRENTUSER DARI REDUX
-    const { setCurrentUser } = this.props;
-    // LISTEN PADA PERUBAHAN AUTH, KARENA FUNGSI INI ME-RETURN UNSUBSCRIBE MAKA INISIALISASI JUGA UNSUBSCRIBE
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
-      if (userAuth) {
-        const userRef = await createUserProfileDocument(userAuth);
-
-        // LISTEN SAAT TERJADI SNAPSHOT
-        this.unsubscribeFromSnapShot = userRef.onSnapshot((snapShot) => {
-          setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data(),
-          });
-        });
-      } else {
-        setCurrentUser(userAuth);
-      }
-    });
+    this.props.setCurrentNav(null);
+    const { checkUserSession } = this.props;
+    checkUserSession();
   }
 
   componentWillUnmount() {
@@ -77,7 +62,8 @@ const mapStateToProps = createStructuredSelector({
 
 // MENGAMBIL METHOD SETCURRENTUSER
 const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  setCurrentNav: (location) => dispatch(setCurrentNav(location)),
+  checkUserSession: () => dispatch(checkUserSession()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
