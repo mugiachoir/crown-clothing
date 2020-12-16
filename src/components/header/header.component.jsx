@@ -16,68 +16,45 @@ import {
 } from "./header.style";
 import { signOutStart } from "../../redux/user/user.actions";
 
-class Header extends React.Component {
-  activeNav = () => {
-    setTimeout(() => {
-      const currentLocation = window.location.href;
-      const pageName = currentLocation.split("/");
-      this.props.setCurrentNav(pageName[3]);
-    }, 100);
-  };
-
-  componentWillUnmount() {
-    this.props.setCurrentNav(null);
-  }
-
-  render() {
-    const { signOutStart } = this.props;
-
-    return (
-      <HeaderContainer>
-        <LogoContainer onClick={this.activeNav} to="/">
-          <Logo className="logo" />
-        </LogoContainer>
-        <OptionsContainer>
+const Header = ({ nav, signOutStart, currentUser, hidden }) => {
+  return (
+    <HeaderContainer>
+      <LogoContainer to="/">
+        <Logo className="logo" />
+      </LogoContainer>
+      <OptionsContainer>
+        <OptionLink className={`${nav === "shop" ? "active" : ""} `} to="/shop">
+          SHOP
+        </OptionLink>
+        <OptionLink
+          className={` ${nav === "contact" ? "active" : ""} `}
+          to="/contact"
+        >
+          CONTACT
+        </OptionLink>
+        {currentUser ? (
           <OptionLink
-            onClick={this.activeNav}
-            className={`${this.props.nav === "shop" ? "active" : ""} `}
-            to="/shop"
+            as="div"
+            onClick={() => {
+              signOutStart();
+            }}
           >
-            SHOP
+            SIGN OUT
           </OptionLink>
+        ) : (
           <OptionLink
-            onClick={this.activeNav}
-            className={` ${this.props.nav === "contact" ? "active" : ""} `}
-            to="/contact"
+            className={` ${nav === "signin" ? "active" : ""} `}
+            to="/signin"
           >
-            CONTACT
+            SIGN IN
           </OptionLink>
-          {this.props.currentUser ? (
-            <OptionLink
-              as="div"
-              onClick={() => {
-                signOutStart();
-                this.activeNav();
-              }}
-            >
-              SIGN OUT
-            </OptionLink>
-          ) : (
-            <OptionLink
-              onClick={this.activeNav}
-              className={` ${this.props.nav === "signin" ? "active" : ""} `}
-              to="/signin"
-            >
-              SIGN IN
-            </OptionLink>
-          )}
-          <CartIcon />
-        </OptionsContainer>
-        {this.props.hidden ? null : <CartDropdown />}
-      </HeaderContainer>
-    );
-  }
-}
+        )}
+        <CartIcon />
+      </OptionsContainer>
+      {hidden ? null : <CartDropdown />}
+    </HeaderContainer>
+  );
+};
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,

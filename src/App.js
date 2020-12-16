@@ -1,11 +1,11 @@
 import "./App.css";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import HomePage from "./pages/homepage/homepage.component";
 import ShopPage from "./pages/shop/shop.component";
 import Header from "./components/header/header.component";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import CheckoutPage from "./pages/checkout/checkout.component";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import { selectCurrentUser } from "./redux/user/user.selectors";
 import { createStructuredSelector } from "reselect";
 import { setCurrentNav } from "./redux/nav/nav.actions";
@@ -14,46 +14,40 @@ import { checkUserSession } from "./redux/user/user.actions";
 // CONNECT UNTUK MENGAMBIL STATE DARI REDUX STORAGE DAN MENGUBAHNYA JADI PROPS
 import { connect } from "react-redux";
 
-class App extends React.Component {
-  unsubscribeFromAuth = null;
-  unsubscribeFromSnapShot = null;
+const App = ({ checkUserSession, currentUser, setCurrentNav }) => {
+  const history = useHistory();
+  const takeLocation = useCallback(() => {
+    const currentLocation = window.location.href;
+    const pageName = currentLocation.split("/");
+    setCurrentNav(pageName[3]);
+  }, [setCurrentNav]);
 
-  componentDidMount() {
-    this.props.setCurrentNav(null);
-    const { checkUserSession } = this.props;
+  useEffect(() => {
+    takeLocation();
     checkUserSession();
-  }
+    history.listen(() => {
+      takeLocation();
+    });
+  }, [checkUserSession, history, setCurrentNav, takeLocation]);
 
-  componentWillUnmount() {
-    // TUTUP LISTEN PERUBAHAN AUTH AGAR TIDAK ADA MEMORY LEAK
-    this.unsubscribeFromAuth();
-    this.unsubscribeFromSnapShot();
-  }
-
-  render() {
-    return (
-      <div>
-        <Header />
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route path="/shop" component={ShopPage} />
-          <Route
-            exact
-            path="/signin"
-            render={() =>
-              this.props.currentUser ? (
-                <Redirect to="/" />
-              ) : (
-                <SignInAndSignUpPage />
-              )
-            }
-          />
-          <Route exact path="/checkout" component={CheckoutPage} />
-        </Switch>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <Header />
+      <Switch>
+        <Route exact path="/" component={HomePage} />
+        <Route path="/shop" component={ShopPage} />
+        <Route
+          exact
+          path="/signin"
+          render={() =>
+            currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />
+          }
+        />
+        <Route exact path="/checkout" component={CheckoutPage} />
+      </Switch>
+    </div>
+  );
+};
 
 // MENGAMBIL DATA DARI REDUX
 const mapStateToProps = createStructuredSelector({
